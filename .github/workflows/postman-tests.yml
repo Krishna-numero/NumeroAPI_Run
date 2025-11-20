@@ -1,0 +1,32 @@
+name: Postman API Tests
+
+on:
+  workflow_dispatch:  # manual trigger
+  schedule:
+    - cron: "30 3 * * *"   # 9:00 AM IST
+    - cron: "30 11 * * *"  # 5:00 PM IST
+    - cron: "30 15 * * *"  # 9:00 PM IST
+
+jobs:
+  run-api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Newman & Reporters
+        run: npm install -g newman newman-reporter-html
+
+      - name: Run Postman Collection with Newman
+        run: |
+          newman run "C:\Users\krisz\Downloads\api-automation-main\postman-newman-automation\Sanity Test Production.postman_collection.json" \
+            -r cli,html \
+            --reporter-html-export newman-report.html
+
+      - n
