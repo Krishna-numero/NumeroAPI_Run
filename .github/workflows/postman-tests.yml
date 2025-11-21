@@ -7,6 +7,7 @@ on:
 jobs:
   postman:
     runs-on: ubuntu-latest
+
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -14,15 +15,22 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Inject Slack Webhook into Postman environment
+        run: |
+          jq --arg hook "$SLACK_WEBHOOK_URL" \
+            '.values |= map(if .key=="SLACK_WEBHOOK_URL" then .value=$hook else . end)' \
+            environment-template.json > environment.json
+
       - name: Install Newman
         run: npm install -g newman newman-reporter-html
 
       - name: Run Postman Collection
         run: |
-          echo "Running Postman tests"
-          newman run "postman/Sanity Test Production.postman_collection_1.json" \
-            -e "environment-template.json" \
-            --env-var "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" \
+          newman run "postman/Sanity Test Production.postman_collection.json" \
+            -e "environment.json" \
             -r cli,html \
             --reporter-html-export newman-report.html \
             --suppress-exit-code
