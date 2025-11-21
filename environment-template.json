@@ -1,5 +1,5 @@
 {
-  "id": "some-id",
+  "id": "your-env-id",
   "name": "CI Environment",
   "values": [
     {
@@ -7,7 +7,6 @@
       "value": "",
       "enabled": true
     }
-    // ... other variables if needed
   ],
   "_postman_variable_scope": "environment"
 }
