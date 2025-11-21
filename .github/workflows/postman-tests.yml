@@ -15,10 +15,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Newman
-        run: npm install -g newman
+        run: npm install -g newman newman-reporter-html
 
       - name: Run Postman Collection
         run: |
+          echo "Running Postman tests"
           newman run "postman/Sanity Test Production.postman_collection.json" \
             -e "postman/environment-template.json" \
             --env-var "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" \
