@@ -21,7 +21,7 @@ jobs:
         run: |
           echo "Running Postman tests"
           newman run "postman/Sanity Test Production.postman_collection_1.json" \
-            -e "postman/environment-template.json" \
+            -e "environment-template.json" \
             --env-var "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" \
             -r cli,html \
             --reporter-html-export newman-report.html \
