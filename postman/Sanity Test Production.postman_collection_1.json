@@ -1,30 +1,23 @@
 {
-  "info": {
-    "_postman_id": "a88f9266-26f1-4a37-a117-2c43c5d03a09",
-    "name": "Sanity Test Production",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "48384748"
-  },
-  "item": [
-    {
-      "name": "NumeroSlackWebhook",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"text\": \"<!channel> *API Automation Execution Summary*\\nTotal: {{totalCount}} | Passed: {{passedCount}} | Failed: {{failedCount}}\\n\\nDetails:\\n{{summary}}\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{SLACK_WEBHOOK_URL}}"
+  "name": "NumeroSlackWebhook",
+  "request": {
+    "method": "POST",
+    "header": [],
+    "body": {
+      "mode": "raw",
+      "raw": "{\r\n    \"text\": \"<!channel> *API Automation Execution Summary*\\nTotal: {{totalCount}} | Passed: {{passedCount}} | Failed: {{failedCount}}\\n\\nDetails:\\n{{summary}}\"\r\n}",
+      "options": {
+        "raw": {
+          "language": "json"
         }
-      },
-      "response": []
+      }
+    },
+    "url": {
+      "raw": "{{SLACK_WEBHOOK_URL}}",
+      "host": [
+        "{{SLACK_WEBHOOK_URL}}"
+      ]
     }
-  ]
+  },
+  "response": []
 }
