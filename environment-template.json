@@ -1,14 +1,5 @@
 {
-    "id": "your-env-id",
-    "name": "CI Environment",
-    "values": [
-      {
-        "key": "SLACK_WEBHOOK_URL",
-        "value": "",
-        "enabled": true
-      }
-    
-    ]
-    
-  }
-  
+  "key": "SLACK_WEBHOOK_URL",
+  "value": "",
+  "enabled": true
+}
