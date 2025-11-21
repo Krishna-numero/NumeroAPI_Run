@@ -1,53 +1,38 @@
-name: Postman API Tests
+name: Run Postman Tests
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "30 3 * * *"
-    - cron: "30 11 * * *"
-    - cron: "30 15 * * *"
+  push:
 
 jobs:
-  run-api-tests:
+  postman:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
-
-      - name: Inject Slack webhook secret into environment file
+      - name: Install Node and Newman + HTML reporter
         run: |
-          jq --arg url "${{ secrets.SLACK_WEBHOOK_URL }}" '.values |= map(
-            if .key=="SLACK_WEBHOOK_URL" then 
-              .value=$url 
-            else . end
-          )' environment-template.json > environment.json
+          npm install -g newman newman-reporter-htmlextra
 
-      - name: Show Environment File Contents
+      - name: Debug collection for SLACK variables
         run: |
-          echo "Environment file contents:"
-          cat environment.json
-          echo ""
-          echo "SLACK_WEBHOOK_URL value (first 20 chars):"
-          jq -r '.values[] | select(.key=="SLACK_WEBHOOK_URL") | .value' environment.json | head -c 20 || echo "Not found"
+          echo "Searching for SLACK variables in the collection..."
+          grep -R "SLACK" -n "postman/Sanity Test Production.postman_collection_1.json" || echo "No SLACK variables found"
 
-      - name: Install Newman & Reporters
-        run: npm install -g newman newman-reporter-html
-
-      - name: Run Newman
+      - name: Run Postman tests
         run: |
-          newman run "postman/Sanity Test Production.postman_collection_1.json" -e environment.json \
-            -r cli,html \
-            --reporter-html-export newman-report.html \
+          echo "Using Slack URL: ${SLACK_WEBHOOK_URL:0:20}..."
+          newman run "postman/Sanity Test Production.postman_collection_1.json" \
+            --env-var "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" \
+            -r cli,htmlextra \
+            --reporter-htmlextra-export newman-report.html \
             --suppress-exit-code
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Upload Newman Report
         uses: actions/upload-artifact@v4
