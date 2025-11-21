@@ -2,20 +2,22 @@
   "name": "NumeroSlackWebhook",
   "request": {
     "method": "POST",
-    "header": [],
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
     "body": {
       "mode": "raw",
-      "raw": "{\r\n    \"text\": \"<!channel> *API Automation Execution Summary*\\nTotal: {{totalCount}} | Passed: {{passedCount}} | Failed: {{failedCount}}\\n\\nDetails:\\n{{summary}}\"\r\n}",
-      "options": {
-        "raw": {
-          "language": "json"
-        }
-      }
+      "raw": "{\n  \"text\": \"<!channel> *API Automation Execution Summary*\\nTotal: {{totalCount}} | Passed: {{passedCount}} | Failed: {{failedCount}}\\n\\nDetails:\\n{{summary}}\"\n}"
     },
     "url": {
       "raw": "{{SLACK_WEBHOOK_URL}}",
-      "host": ["{{SLACK_WEBHOOK_URL}}"]  
-    
+      "protocol": "https",
+      "host": [
+        "{{SLACK_WEBHOOK_URL}}"
+      ]
     }
   },
   "response": []
