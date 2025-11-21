@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "Using Slack URL: ${SLACK_WEBHOOK_URL:0:20}..."
           newman run "postman/Sanity Test Production.postman_collection_1.json" \
-            --global-var "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" \
+            --env-var "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" \
             -r cli,html \
             --reporter-html-export newman-report.html \
             --suppress-exit-code
