@@ -14,9 +14,8 @@
     },
     "url": {
       "raw": "{{SLACK_WEBHOOK_URL}}",
-      "host": [
-        "{{SLACK_WEBHOOK_URL}}"
-      ]
+      "host": ["{{SLACK_WEBHOOK_URL}}"]  
+    
     }
   },
   "response": []
