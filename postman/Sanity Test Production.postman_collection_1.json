@@ -1,31 +1,30 @@
 {
-	"info": {
-		"_postman_id": "a88f9266-26f1-4a37-a117-2c43c5d03a09",
-		"name": "Sanity Test Production",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "48384748",
-		"_collection_link": "https://krishna-krishnamoorthy-7859189.postman.co/workspace/Personal-Workspace~cd8df94f-2eb7-4cef-a340-ae0f568256c8/collection/48384748-a88f9266-26f1-4a37-a117-2c43c5d03a09?action=share&source=collection_link&creator=48384748"
-	},
-	"item": [
-		 {
-			"name": "NumeroSlackWebhook",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"<!channel> *API Automation Execution Summary*\\nTotal: {{totalCount}} | Passed: {{passedCount}} | Failed: {{failedCount}}\\n\\nDetails:\\n{{summary}}\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{SLACK_WEBHOOK_URL}}"	
-				}
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "a88f9266-26f1-4a37-a117-2c43c5d03a09",
+    "name": "Sanity Test Production",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "48384748"
+  },
+  "item": [
+    {
+      "name": "NumeroSlackWebhook",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"text\": \"<!channel> *API Automation Execution Summary*\\nTotal: {{totalCount}} | Passed: {{passedCount}} | Failed: {{failedCount}}\\n\\nDetails:\\n{{summary}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{SLACK_WEBHOOK_URL}}"
+        }
+      },
+      "response": []
+    }
+  ]
 }
