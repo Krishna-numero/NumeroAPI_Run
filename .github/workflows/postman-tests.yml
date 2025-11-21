@@ -1,46 +1,32 @@
-name: Postman API Tests
+name: Run Postman Tests
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "30 3 * * *"     # 9 AM IST
-    - cron: "30 11 * * *"    # 5 PM IST
-    - cron: "30 15 * * *"    # 9 PM IST
+  push:
 
 jobs:
-  run-api-tests:
+  postman:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
+      - name: Install Newman
+        run: npm install -g newman
 
-      - name: Install Newman & Reporters
-        run: npm install -g newman newman-reporter-html
-
-      - name: Inject Slack Webhook into Environment File
+      - name: Run Postman Collection
         run: |
-          echo '{ "slack_webhook_url": "'"$SLACK_WEBHOOK_URL"'" }' > env.json
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Show Generated Environment File
-        run: cat env.json
-
-      - name: Run Newman
-        run: |
-          newman run "postman/Sanity Test Production.postman_collection_1.json" \
+          newman run "postman/Sanity Test Production.postman_collection.json" \
+          -e "postman/environment-template.json" \
+          --env-var "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" \
             -e env.json \
             -r cli,html \
             --reporter-html-export newman-report.html \
             --suppress-exit-code
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        
 
       - name: Upload Newman Report
         uses: actions/upload-artifact@v4
