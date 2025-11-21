@@ -31,6 +31,10 @@ jobs:
             else . end
           )' environment-template.json > environment.json
 
+          - name: Show Environment File Contents
+  run: cat environment.json
+
+
       - name: Install Newman & Reporters
         run: npm install -g newman newman-reporter-html
 
