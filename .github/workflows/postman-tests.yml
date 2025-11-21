@@ -14,25 +14,25 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install Node and Newman + HTML reporter
+      - name: Install Node and Newman
         run: |
           npm install -g newman newman-reporter-htmlextra
 
-      - name: Debug collection for SLACK variables
+      - name: Debug Slack variable
         run: |
-          echo "Searching for SLACK variables in the collection..."
-          grep -R "SLACK" -n "postman/Sanity Test Production.postman_collection_1.json" || echo "No SLACK variables found"
+          echo "Using Slack URL (first 20 chars): ${SLACK_WEBHOOK_URL:0:20}"
+
+      - name: Debug Postman file for SLACK variable
+        run: |
+          grep -R "SLACK_WEBHOOK_URL" -n "postman/Sanity Test Production.postman_collection_1.json"
 
       - name: Run Postman tests
         run: |
-          echo "Using Slack URL: ${SLACK_WEBHOOK_URL:0:20}..."
           newman run "postman/Sanity Test Production.postman_collection_1.json" \
-            --env-var "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" \
-            -r cli,htmlextra \
-            --reporter-htmlextra-export newman-report.html \
+            --global-var "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" \
+            -r cli,html \
+            --reporter-html-export newman-report.html \
             --suppress-exit-code
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Upload Newman Report
         uses: actions/upload-artifact@v4
