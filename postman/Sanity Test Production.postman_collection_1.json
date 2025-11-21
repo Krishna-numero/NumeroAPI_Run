@@ -9970,7 +9970,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://hooks.slack.com/services/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",
+					"raw": "{{SLACK_WEBHOOK_URL}}",
 					"protocol": "https",
 					"host": [
 						"hooks",
