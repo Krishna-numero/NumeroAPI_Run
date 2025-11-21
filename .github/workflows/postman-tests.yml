@@ -1,11 +1,11 @@
 name: Postman API Tests
 
 on:
-  workflow_dispatch:  # manual trigger
+  workflow_dispatch:
   schedule:
-    - cron: "30 3 * * *"   # 9:00 AM IST
-    - cron: "30 11 * * *"  # 5:00 PM IST
-    - cron: "30 15 * * *"  # 9:00 PM IST
+    - cron: "30 3 * * *"
+    - cron: "30 11 * * *"
+    - cron: "30 15 * * *"
 
 jobs:
   run-api-tests:
@@ -20,17 +20,26 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Inject Slack webhook secret into environment file
+        run: |
+          jq '.values |= map(
+            if .key=="SLACK_WEBHOOK_URL" then 
+              .value="${{ secrets.SLACK_WEBHOOK_URL }}" 
+            else . end
+          )' environment-template.json > environment.json
+
       - name: Install Newman & Reporters
         run: npm install -g newman newman-reporter-html
 
-      - name: Run Postman Collection with Newman
+      - name: Run Newman
         run: |
-          newman run "postman/Sanity Test Production.postman_collection_1.json" \
+          newman run "postman/Sanity Test Production.postman_collection_1.json" -e environment.json \
             -r cli,html \
             --reporter-html-export newman-report.html \
             --suppress-exit-code
-
-
 
       - name: Upload Newman Report
         uses: actions/upload-artifact@v4
