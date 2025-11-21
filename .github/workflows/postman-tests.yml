@@ -8,35 +8,35 @@ jobs:
   postman:
     runs-on: ubuntu-latest
 
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Install Node and Newman
         run: |
-          npm install -g newman
-          npm install -g newman-reporter-htmlextra
+          npm install -g newman newman-reporter-htmlextra
 
-      # Debug – ensure secret is passed
-      - name: Debug – show first few characters of Slack URL
+      # 🔍 Debug: Check what GitHub actually received
+      - name: Debug Slack Secret
         run: |
-          echo "SLACK_WEBHOOK_URL starts with: ${SLACK_WEBHOOK_URL:0:20}"
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "❌ SLACK_WEBHOOK_URL is EMPTY"
+          else
+            echo "✔ SLACK_WEBHOOK_URL loaded: ${SLACK_WEBHOOK_URL:0:20}..."
+          fi
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      - name: Debug – check SLACK variable in collection
-        run: |
-          echo "Searching for SLACK variables in the collection..."
-          grep -R "SLACK_WEBHOOK_URL" -n "postman/Sanity Test Production.postman_collection_1.json" || echo "Not found in collection"
-
-      - name: Run Postman tests
+      # 🔥 Run collection with environment variable
+      - name: Run Postman Tests
         run: |
           newman run "postman/Sanity Test Production.postman_collection_1.json" \
-            --env-var "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" \
-            -r cli,htmlextra \
-            --reporter-htmlextra-export newman-report.html \
+            --env-var SLACK_WEBHOOK_URL="${SLACK_WEBHOOK_URL}" \
+            -r cli,html \
+            --reporter-html-export newman-report.html \
             --suppress-exit-code
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Upload Newman Report
         uses: actions/upload-artifact@v4
