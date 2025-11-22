@@ -3,6 +3,10 @@ name: Run Postman Tests
 on:
   workflow_dispatch:
   push:
+  schedule:
+    - cron: "30 3 * * *"   # 9:00 AM IST
+    - cron: "30 11 * * *"  # 5:00 PM IST
+    - cron: "30 15 * * *"  # 9:00 PM IST
 
 jobs:
   postman:
@@ -16,7 +20,6 @@ jobs:
         run: |
           npm install -g newman newman-reporter-htmlextra
 
-      # 🔍 Debug: Check what GitHub actually received
       - name: Debug Slack Secret
         run: |
           if [ -z "${SLACK_WEBHOOK_URL}" ]; then
@@ -27,7 +30,6 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      # 🔥 Run collection with environment variable
       - name: Run Postman Tests
         run: |
           newman run "postman/Sanity Test Production.postman_collection_1.json" \
